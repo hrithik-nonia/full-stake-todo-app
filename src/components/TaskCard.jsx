@@ -1,14 +1,18 @@
-function TaskCard() {
+function TaskCard({ data }) {
   return (
     <>
       <section className="text-white border border-gray-600 backdrop-blur-4xl rounded-2xl px-10 flex flex-col gap-3">
-        <div className="bg-green-400 py-2 rounded-full">
-          <p className="text-center">Complete</p>
+        <div
+          className={`${data.completed === true ? "bg-green-400" : "bg-red-400"} py-2 rounded-full`}
+        >
+          <p className="text-center">
+            {data.completed === true ? "Completed" : "Not Completed"}
+          </p>
         </div>
         <div className="flex justify-between">
           <div className="flex flex-col gap-3">
-            <p className="text-lg">task</p>
-            <p className="text-sm">date</p>
+            <p className="text-lg">{data.title}</p>
+            <p className="text-sm">{data.date}</p>
           </div>
 
           <div className="flex flex-col gap-3">
