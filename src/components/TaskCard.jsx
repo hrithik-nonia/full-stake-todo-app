@@ -1,10 +1,39 @@
 import { useContext } from "react";
 import { AppContext } from "../AppContaxt/AppContext";
-import { patchTask } from "../api/api";
+import { patchTask, deleteTask } from "../api/api";
 
 function TaskCard({ data }) {
-  // set title value to context
-  const { setEditTask } = useContext(AppContext);
+  const { setEditTask, setGetData } = useContext(AppContext);
+
+  // delete task
+  const handelDeleteTask = async () => {
+    const response = await deleteTask(data.id);
+
+    if (response.success) {
+      // list me se sirf isi task ko hatao (id match karke)
+      setGetData((prev) => prev.filter((task) => task.id !== data.id));
+    } else {
+      alert(response.error);
+    }
+  };
+
+  // mark complete / incomplete toggle
+  const handleToggleComplete = async () => {
+    const response = await patchTask(data.id);
+
+    if (response.success) {
+      // list me sirf isi task ka completed status update karo
+      setGetData((prev) =>
+        prev.map((task) =>
+          task.id === data.id
+            ? { ...task, completed: response.data.completed }
+            : task,
+        ),
+      );
+    } else {
+      alert(response.error);
+    }
+  };
 
   return (
     <>
@@ -29,13 +58,16 @@ function TaskCard({ data }) {
             >
               Edit
             </button>
-            <button className="bg-red-500 px-10 rounded-full py-1 cursor-pointer">
+            <button
+              className="bg-red-500 px-10 rounded-full py-1 cursor-pointer"
+              onClick={handelDeleteTask}
+            >
               Delete
             </button>
 
             <button
               className="bg-blue-500 px-10 rounded-full py-1 cursor-pointer"
-              onClick={() => patchTask(data.id)}
+              onClick={handleToggleComplete}
             >
               Mark Complete
             </button>

@@ -1,10 +1,11 @@
 import TaskCard from "../components/TaskCard";
 import { getAllTasks } from "../api/api";
-import { useEffect, useState } from "react";
+import { useEffect, useContext } from "react";
+import { AppContext } from "../AppContaxt/AppContext";
 
 function AllPosts() {
-  // state for store data
-  const [getData, setGetData] = useState([]);
+  // get task data from context
+  const { getData, setGetData } = useContext(AppContext);
 
   // fetch all taska at once
   useEffect(() => {

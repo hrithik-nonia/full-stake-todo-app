@@ -59,17 +59,24 @@ export const updateTask = async (taskId, taskData) => {
 // PATCH TASK
 // =========================
 export const patchTask = async (taskId) => {
-  const response = await api.patch(`/tasks/partially_update_post/${taskId}`);
-  return response.data;
+  try {
+    const response = await api.patch(`/tasks/partially_update_post/${taskId}`);
+    return { success: true, data: response.data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.response?.data?.detail || "Failed to update task",
+    };
+  }
 };
 
 // =========================
 // DELETE TASK
 // =========================
-// export const deleteTask = async (taskId) => {
-//   const response = await api.delete(`/tasks/${taskId}`);
-//   return response.data;
-// };
+export const deleteTask = async (taskId) => {
+  const response = await api.delete(`/tasks/delete_post/${taskId}`);
+  return response.data;
+};
 
 
 // =========================
