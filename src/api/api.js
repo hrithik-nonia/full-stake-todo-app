@@ -58,10 +58,10 @@ export const updateTask = async (taskId, taskData) => {
 // =========================
 // PATCH TASK
 // =========================
-// export const patchTask = async (taskId, taskData) => {
-//   const response = await api.patch(`/tasks/${taskId}`, taskData);
-//   return response.data;
-// };
+export const patchTask = async (taskId) => {
+  const response = await api.patch(`/tasks/partially_update_post/${taskId}`);
+  return response.data;
+};
 
 // =========================
 // DELETE TASK

@@ -1,9 +1,11 @@
 import { useContext } from "react";
 import { AppContext } from "../AppContaxt/AppContext";
+import { patchTask } from "../api/api";
 
 function TaskCard({ data }) {
   // set title value to context
   const { setEditTask } = useContext(AppContext);
+
   return (
     <>
       <section className="text-white border border-gray-600 backdrop-blur-4xl rounded-2xl px-10 flex flex-col gap-3">
@@ -22,13 +24,20 @@ function TaskCard({ data }) {
 
           <div className="flex flex-col gap-3">
             <button
-              className="bg-yellow-500 px-10 rounded-full py-1"
+              className="bg-yellow-500 px-10 rounded-full py-1 cursor-pointer"
               onClick={() => setEditTask(data)}
             >
               Edit
             </button>
-            <button className="bg-red-500 px-10 rounded-full py-1">
+            <button className="bg-red-500 px-10 rounded-full py-1 cursor-pointer">
               Delete
+            </button>
+
+            <button
+              className="bg-blue-500 px-10 rounded-full py-1 cursor-pointer"
+              onClick={() => patchTask(data.id)}
+            >
+              Mark Complete
             </button>
           </div>
         </div>
