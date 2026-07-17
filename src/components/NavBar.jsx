@@ -1,7 +1,8 @@
 import { NavLink } from "react-router-dom";
-import { useState } from "react";
-import { createTask } from "../api/api";
+import { useState, useContext, useEffect } from "react";
+import { createTask, updateTask } from "../api/api";
 import Toast from "./ToastComponent";
+import { AppContext } from "../AppContaxt/AppContext";
 
 // initial form data
 const initialFormData = { title: "" };
@@ -11,6 +12,17 @@ export default function NavBar() {
 
   // state for toast popup
   const [toast, setToast] = useState(null);
+
+  // context se editTask aur setEditTask dono liya
+  const { editTask, setEditTask } = useContext(AppContext);
+
+  // set edit task to the input field
+  useEffect(() => {
+    if (editTask) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setFormData({ title: editTask.title });
+    }
+  }, [editTask]);
 
   // handle form change
   const handleChange = (e) => {
@@ -34,21 +46,39 @@ export default function NavBar() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const taskData = {
-      ...formData,
-      date: new Date().toISOString(), // current date-time auto add
-    };
+    let result;
 
-    // function call karke form data ko vhejo
-    const result = await createTask(taskData);
+    if (editTask) {
+      // EDIT MODE -> PUT request
+      const updatedData = {
+        ...formData,
+        date: editTask.date,
+      };
+
+      result = await updateTask(editTask.id, updatedData);
+    } else {
+      // CREATE MODE -> POST request
+      const taskData = {
+        ...formData,
+        date: new Date().toISOString(),
+      };
+      result = await createTask(taskData);
+    }
 
     if (result.success) {
-      showToast("Successfully Created Post", "success");
+      showToast(
+        editTask ? "Successfully Updated Task" : "Successfully Created Post",
+        "success",
+      );
     } else {
-      showToast("Fail to Create Post", "error");
+      showToast(
+        editTask ? "Fail to Update Task" : "Fail to Create Post",
+        "error",
+      );
     }
 
     setFormData(initialFormData);
+    setEditTask(null); // edit mode reset -> wapas create mode
   };
 
   return (
@@ -59,7 +89,9 @@ export default function NavBar() {
       {/* navbar */}
       <nav className="bg-black flex justify-between py-5 px-10 text-white ">
         <div>
-          <h1 className="text-lg font-serif ">TODO APP</h1>
+          <h1 className="text-lg font-serif ">
+            <NavLink to="/">TODO APP</NavLink>
+          </h1>
         </div>
 
         <form className="flex gap-3" onSubmit={handleSubmit}>
