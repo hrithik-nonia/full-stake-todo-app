@@ -14,7 +14,7 @@ export default function NavBar() {
   const [toast, setToast] = useState(null);
 
   // context se editTask aur setEditTask dono liya
-  const { editTask, setEditTask } = useContext(AppContext);
+  const { editTask, setEditTask, setGetData } = useContext(AppContext);
 
   // set edit task to the input field
   useEffect(() => {
@@ -56,6 +56,15 @@ export default function NavBar() {
       };
 
       result = await updateTask(editTask.id, updatedData);
+
+      if (result.success) {
+        // backend se jo updated task object aaya hai use assume karte hain result.data me
+        setGetData((prev) =>
+          prev.map((item) =>
+            item.id === editTask.id ? { ...item, ...result.data } : item,
+          ),
+        );
+      }
     } else {
       // CREATE MODE -> POST request
       const taskData = {
